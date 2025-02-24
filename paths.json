@@ -1,0 +1,8 @@
+{
+  "local": {
+    "zabka_html_file": "zabka_html_file.html"
+  },
+  "web": {
+      "zabka_url": "https://www.zabka.pl/strefa-piwa/"
+  }
+}
