@@ -7,3 +7,4 @@ async def main():
     print(data.zabka_beer_data)
 if __name__ == '__main__':
     asyncio.run(main())
+    #a
