@@ -10,10 +10,16 @@ class BeerData:
     def __init__(self):
         self.zabka_beer_data = None
         self._paths = None
+        
     async def pull(self):
         self._paths = await self.__get_paths()
         self.zabka_beer_data = await self.__extract_zabka_beer_data()
-
+        
+    async def export_to_json(self):
+        assert self.zabka_beer_data is not None, "zabka_beer_data is not populated"
+        with open("zabka_beer_data.json", "w", encoding="utf-8") as f:
+            json.dump(self.zabka_beer_data, f, ensure_ascii=False, indent=4)
+            
     @staticmethod
     async def __get_paths():
         with open("paths.json", "r", encoding="utf-8") as f:
