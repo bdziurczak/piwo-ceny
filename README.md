@@ -1,6 +1,2 @@
-Scrapping beer data from websites and doing analysis with it(WORK IN PROGRESS!)
-
-TODO next: 
-BeerDataScraper export methods
-Set API for getting json data of beers
-Saving data in SQL db
+API for getting beer data from zabka website
+HTML parsing is done without any third party libraries
