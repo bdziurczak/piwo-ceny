@@ -1,11 +1,17 @@
-import asyncio
-from beer_data import BeerData
+from fastapi import FastAPI
+import json 
+from fastapi.responses import JSONResponse
+from beer_data_scraper import BeerDataScraper
 
-async def main():
-    beer_data = BeerData()
-    await beer_data.pull() #populate BeerData instance
-    print(beer_data.zabka_beer_data[1])
-    await beer_data.export_to_json() #export to json file
-if __name__ == '__main__':
-    asyncio.run(main())
-    
+async def get_beer_data():
+    beer_data = BeerDataScraper()
+    return await beer_data.export()
+
+
+app = FastAPI()
+
+
+@app.get("/")
+async def read_root():
+    json_beer_data = await get_beer_data()
+    return JSONResponse(content=json_beer_data)
