@@ -17,14 +17,10 @@ class BeerDataScraper:
         self._zabka_beer_data = await self.__scrape_zabka_beer_data()
         
     async def export(self):
+        """This method returns the beer data in JSON format."""
         await self._pull()
         assert self._zabka_beer_data is not None, "zabka_beer_data is not populated"
         return self._zabka_beer_data
-        
-    async def export_to_json(self, path):
-        await self._pull()
-        assert self._zabka_beer_data is not None, "zabka_beer_data is not populated"
-        return json.dumps(self._zabka_beer_data,indent=4, ensure_ascii=False)
             
     @staticmethod
     async def __get_paths():
@@ -59,14 +55,11 @@ class BeerDataScraper:
             self.data = []
             self.data_record_buff = {}
             self.class_buff = ""
-            self.interesting_classes = ("product-item-content__title",
-                                        "product-item-content__text product-item-content__informations",
-                                        "product-label__text", "product-info__bottom-label")
+            self.interesting_classes = ("product-item-content__title", "product-label__text", "product-info__bottom-label")
             #dictionary to translate from css classes to data fields
             # this is not a good solution, but it works for now
             self.fancy_classes = {
                 "product-item-content__title": "name",
-                "product-item-content__text product-item-content__informations": "price",
                 "product-label__text": "terms",
                 "product-info__bottom-label": "cut price"
             }
@@ -91,7 +84,7 @@ class BeerDataScraper:
         def handle_data(self, data):
             if self.read_mode:
                 tdata = data.strip()
-                if tdata:
+                if tdata and self.class_buff in self.fancy_classes:
                     self.data_record_buff[self.fancy_classes[self.class_buff]] = tdata #avoid adding strings only with whitespaces
             pass
 
