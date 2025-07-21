@@ -6,7 +6,7 @@ from scraper import Scraper
 class Parser:
     def __init__(self):
         pass
-    async def zabka_parse(self) -> list[tuple[str,str,str]]:
+    async def zabka_parse(self) -> list[tuple[str,str,float]]:
         """
         Asynchronously parses product information from the Żabka website.
         Fetches HTML content using the Scraper.zabka_scrape method, parses it with BeautifulSoup,
@@ -23,11 +23,23 @@ class Parser:
         
         soup = BeautifulSoup(html, 'html.parser')
 
-        titles = [el.get_text() for el in soup.find_all("h3", class_='product-item-content__title')]
-        terms = [el.get_text() for el in soup.find_all("div", class_='product-label__text')]
-        cut_prices = [el.get_text() for el in soup.find_all("span", class_='product-info__bottom-label')]
-        
-        return list(zip(titles, terms, cut_prices))
+
+        beer_items = soup.find_all("div", class_="beer-item")
+        beers: list[tuple] = []
+        for item in beer_items:
+            title = item.find("h3", class_="product-item-content__title").text.strip()
+            terms = [i.text.strip() for i in item.find_all("span", class_="product-label__text")]
+            
+            cut_price = item.find("span", class_="product-info__bottom-label")
+            cut_price = cut_price.text.strip() if cut_price else None
+            if cut_price:
+                cut_price = cut_price.replace("zł", "").strip()
+
+                #Reverse string, take part before the space(only number), reverse back and replace comma with dot
+                cut_price = float(cut_price[::-1].split(' ', 1)[0][::-1].replace(',', '.'))
+
+            beers.append((title if title else "", terms, cut_price if cut_price else ""))
+        return beers
 
 
 async def main():
