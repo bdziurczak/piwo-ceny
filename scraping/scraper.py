@@ -4,13 +4,13 @@ from urllib.request import urlopen
 
 class Scraper:  
     @classmethod
-    async def website_scrape(self) -> str:
+    async def website_scrape(cls) -> str:
         zabka_url = "https://www.zabka.pl/strefa-piwa/"
         zabka_html = urlopen(zabka_url).read().decode('utf-8')
         return zabka_html
     
     @classmethod
-    async def get_beer_data(self) -> list[tuple[str,str,float]]:
+    async def get_beer_data(cls) -> list[tuple[str,list[str],float]]:
         """
         Asynchronously parses product information from the Żabka website.
         Fetches HTML content using the Scraper.zabka_scrape method, parses it with BeautifulSoup,
@@ -29,7 +29,7 @@ class Scraper:
 
 
         beer_items = soup.find_all("div", class_="beer-item")
-        beers: list[tuple] = []
+        beers: list[tuple[str, list[str], float]] = []
         for item in beer_items:
             title = item.find("h3", class_="product-item-content__title").text.strip()
             terms = [i.text.strip() for i in item.find_all("span", class_="product-label__text")]
@@ -42,7 +42,7 @@ class Scraper:
                 #Reverse string, take part before the space(only number), reverse back and replace comma with dot
                 cut_price = float(cut_price[::-1].split(' ', 1)[0][::-1].replace(',', '.'))
 
-            beers.append((title if title else "", terms, cut_price if cut_price else ""))
+            beers.append((title if title else "", terms, cut_price if cut_price else 0))
         return beers
 
 async def main():
