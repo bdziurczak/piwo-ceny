@@ -6,7 +6,7 @@
 
 To make it work, go into project folder and run 
 ```bash
-python -m .venv
+python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 fastapi run main.py
